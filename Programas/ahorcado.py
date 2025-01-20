@@ -8,19 +8,50 @@ sin intentos.
 import random
 
 
-
-i = 0
+# Constantes
 intentos_consumidos = 0
 num_intentos = 10
-lista_palabras_posibles = ['Elefante', 'Jirafa', 'Canguro', 'Zorro', 'Cocodrilo', 'Delfin', 'Lobo',
-                           'Tortuga', 'Hormiga', 'Manzana', 'Platano', 'Naranja', 'Piña', 'Sandia', 
-                           'Cereza', 'Fresa', 'Mango', 'Kiwi', 'Limon', 'Rojo', 'Azul', 'Verde', 'Amarillo',
-                           'Purpura', 'Marron', 'Blanco', 'Negro', 'Gris', 'España', 'Mexico', 'Argentina',
-                           'Brasil', 'Italia', 'Japon', 'Alemania', 'Canada', 'Rusia', 'Australia', '']
-palabra = random.random()
-car = input("Introduzca una letra: ")
-if (car != palabra[i]):
-    intentos_consumidos += 1
+
+with open("../files/lista_ahorcado.txt") as archivo:
+    lista_palabras = [linea.strip().lower() for linea in archivo]
+
+
+palabra = random.choice(lista_palabras)
+longitud = len(palabra)
+
+# Creación de una lista para representar el progreso del jugador
+progreso = ["_"] * longitud
+
+# Mostrar la palabra oculta inicialmente
+print("Palabra:")
+print(" ".join(progreso))
+
+
+while intentos_consumidos < num_intentos and "_" in progreso:
+    letra = input("\n\nIntroduzca una letra: ").lower().strip()
+
+    if not letra or len(letra) != 1 or not letra.isalpha():
+        print("Por favor, introduce una letra válida.")
+        continue
+    
+    # Verificar si la letra está en la palabra
+    if letra in palabra:
+        for idx, char in enumerate(palabra):
+            if char == letra:
+                progreso[idx] = letra
+        print("\nCorrecto!")
+    else:
+        intentos_consumidos += 1
+        print(f"\nIncorrecto. Te quedan {num_intentos - intentos_consumidos} intentos.")
+    
+    
+    # Mostrar el progreso actual
+    print(" ".join(progreso))
+    
+    
+# Verificar el resultado del juego
+if "_" not in progreso:
+    print("\nFelicidades, has ganado!!")
 else:
-    i += 1
+    print(f"\nTe has quedado sin intentos. La palabra era: {palabra}")
 
